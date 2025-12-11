@@ -3,4 +3,3 @@ config();
 
 import '@/ai/flows/suggest-additional-traits.ts';
 import '@/ai/flows/generate-initial-reference.ts';
-import '@/ai/flows/generate-image-from-profile.ts';

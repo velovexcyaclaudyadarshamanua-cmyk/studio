@@ -2,7 +2,6 @@
 
 import { generateInitialReference } from '@/ai/flows/generate-initial-reference';
 import { suggestAdditionalTraits } from '@/ai/flows/suggest-additional-traits';
-import { generateImageFromProfile } from '@/ai/flows/generate-image-from-profile';
 import { z } from 'zod';
 import type { FormState } from '@/app/form-state';
 
@@ -61,15 +60,10 @@ export async function getDreamReference(
     }
 
     if (aiResult.possibleProfile) {
-      const imageResult = await generateImageFromProfile({
-        profile: aiResult.possibleProfile,
-      });
-
       return {
         status: 'success',
         message: 'Here is a possible reference based on your dream.',
         profile: aiResult.possibleProfile,
-        imageUrl: imageResult.imageUrl,
       };
     }
 

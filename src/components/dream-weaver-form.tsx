@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect, useRef } from 'react';
 import { getDreamReference } from '@/app/actions';
 import type { FormState } from '@/app/form-state';
 import { Button } from '@/components/ui/button';
@@ -23,9 +23,7 @@ import {
   Sparkles,
   Theater,
 } from 'lucide-react';
-import { useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import Image from 'next/image';
 import { useFormStatus } from 'react-dom';
 
 const initialState: FormState = {
@@ -154,7 +152,7 @@ export function DreamWeaverForm() {
             </AlertDescription>
           </Alert>
         )}
-        {state.status === 'success' && state.profile && state.imageUrl && (
+        {state.status === 'success' && state.profile && (
           <div className="space-y-6">
             <h2 className="text-3xl font-headline text-center font-bold tracking-tight">
               Possible Reference
@@ -163,19 +161,9 @@ export function DreamWeaverForm() {
               className="animate-fade-in opacity-0"
             >
               <CardContent className="p-6">
-                 <div className="grid md:grid-cols-2 gap-6 items-center">
-                    <div className="space-y-4">
-                      <p className="text-card-foreground">{state.profile}</p>
-                    </div>
-                    <Image
-                      src={state.imageUrl}
-                      alt="Dream reference"
-                      width={512}
-                      height={512}
-                      className="rounded-lg object-cover"
-                      data-ai-hint="dream person"
-                    />
-                  </div>
+                 <div className="space-y-4">
+                    <p className="text-card-foreground">{state.profile}</p>
+                 </div>
               </CardContent>
             </Card>
           </div>
