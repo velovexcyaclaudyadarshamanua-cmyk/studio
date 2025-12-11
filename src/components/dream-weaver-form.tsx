@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { getDreamReference, type FormState } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,7 +23,7 @@ import {
   Sparkles,
   Theater,
 } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 const initialState: FormState = {
@@ -51,7 +51,7 @@ function SubmitButton() {
 }
 
 export function DreamWeaverForm() {
-  const [state, formAction] = useFormState(getDreamReference, initialState);
+  const [state, formAction] = useActionState(getDreamReference, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   
