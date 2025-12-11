@@ -1,9 +1,9 @@
 'use server';
 
 /**
- * @fileOverview AI flow for generating potential profiles based on dream descriptions.
+ * @fileOverview AI flow for generating a potential profile based on dream descriptions.
  *
- * - generateInitialReference - A function that generates potential profiles.
+ * - generateInitialReference - A function that generates a potential profile.
  * - GenerateInitialReferenceInput - The input type for the generateInitialReference function.
  * - GenerateInitialReferenceOutput - The return type for the generateInitialReference function.
  */
@@ -19,11 +19,11 @@ const GenerateInitialReferenceInputSchema = z.object({
 export type GenerateInitialReferenceInput = z.infer<typeof GenerateInitialReferenceInputSchema>;
 
 const NeedsMoreDetailsSchema = z.boolean().describe('True if the AI requires more details to provide a good reference, false otherwise.');
-const PossibleProfilesSchema = z.array(z.string()).describe('Possible profiles of the person from the dream, ordered by relevance.');
+const PossibleProfileSchema = z.string().describe('A single possible profile of the person from the dream.');
 
 const GenerateInitialReferenceOutputSchema = z.object({
   needsMoreDetails: NeedsMoreDetailsSchema,
-  possibleProfiles: PossibleProfilesSchema,
+  possibleProfile: PossibleProfileSchema,
 });
 
 export type GenerateInitialReferenceOutput = z.infer<typeof GenerateInitialReferenceOutputSchema>;
@@ -39,10 +39,8 @@ const checkSufficientDetails = ai.defineTool({
   outputSchema: NeedsMoreDetailsSchema,
 },
 async (input) => {
-  // Implement logic to determine if enough information is available.
-  // This is a placeholder implementation.
   const combinedLength = input.clothing.length + input.environment.length + input.otherDetails.length;
-  return combinedLength < 50; // Example: require at least 50 characters total.
+  return combinedLength < 50; 
 });
 
 
@@ -55,17 +53,17 @@ const generateInitialReferencePrompt = ai.definePrompt({
   input: { schema: GenerateInitialReferenceInputSchema },
   output: { schema: GenerateInitialReferenceOutputSchema },
   tools: [checkSufficientDetails],
-  prompt: `Based on the following details from a dream, generate possible profiles of the person seen in the dream. Exclude any facial details in your consideration, and only consider the details provided.
+  prompt: `Based on the following details from a dream, generate a possible profile of the person seen in the dream. Exclude any facial details in your consideration, and only consider the details provided.
 
 Clothing: {{{clothing}}}
 Environment: {{{environment}}}
 Other Details: {{{otherDetails}}}
 
-Determine if you need more details using the checkSufficientDetails tool. If the tool indicates more details are needed, set needsMoreDetails to true and provide an empty array for possibleProfiles.
+Determine if you need more details using the checkSufficientDetails tool. If the tool indicates more details are needed, set needsMoreDetails to true and provide an empty string for possibleProfile.
 
-Otherwise, generate a list of possible profiles ordered by relevance, and set needsMoreDetails to false.
+Otherwise, generate a single possible profile, and set needsMoreDetails to false.
 
-Your output should conform to the GenerateInitialReferenceOutputSchema.`, // Ensure this schema is adhered to, and specifically use the descriptions to create output.
+Your output should conform to the GenerateInitialReferenceOutputSchema.`,
 });
 
 const generateInitialReferenceFlow = ai.defineFlow(

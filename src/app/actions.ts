@@ -1,16 +1,10 @@
-
 'use server';
 
 import { generateInitialReference } from '@/ai/flows/generate-initial-reference';
 import { suggestAdditionalTraits } from '@/ai/flows/suggest-additional-traits';
+import { generateImageFromProfile } from '@/ai/flows/generate-image-from-profile';
 import { z } from 'zod';
-
-export interface FormState {
-  status: 'idle' | 'success' | 'needs_details' | 'error';
-  message?: string;
-  profiles?: string[];
-  suggestions?: string[];
-}
+import type { FormState } from '@/app/form-state';
 
 const DreamSchema = z.object({
   clothing: z.string(),
@@ -66,11 +60,16 @@ export async function getDreamReference(
       };
     }
 
-    if (aiResult.possibleProfiles && aiResult.possibleProfiles.length > 0) {
+    if (aiResult.possibleProfile) {
+      const imageResult = await generateImageFromProfile({
+        profile: aiResult.possibleProfile,
+      });
+
       return {
         status: 'success',
-        message: 'Here are some possible references based on your dream.',
-        profiles: aiResult.possibleProfiles,
+        message: 'Here is a possible reference based on your dream.',
+        profile: aiResult.possibleProfile,
+        imageUrl: imageResult.imageUrl,
       };
     }
 

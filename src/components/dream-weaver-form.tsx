@@ -1,8 +1,8 @@
-
 'use client';
 
-import { useFormStatus } from 'react-dom';
-import { getDreamReference, type FormState } from '@/app/actions';
+import { useActionState } from 'react';
+import { getDreamReference } from '@/app/actions';
+import type { FormState } from '@/app/form-state';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -23,15 +23,16 @@ import {
   Sparkles,
   Theater,
 } from 'lucide-react';
-import { useEffect, useRef, useActionState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import Image from 'next/image';
 
 const initialState: FormState = {
   status: 'idle',
 };
 
 function SubmitButton() {
-  const { pending } = useFormStatus();
+  const { pending } = useActionState();
 
   return (
     <Button type="submit" className="w-full" disabled={pending} size="lg">
@@ -152,24 +153,30 @@ export function DreamWeaverForm() {
             </AlertDescription>
           </Alert>
         )}
-        {state.status === 'success' && state.profiles && (
+        {state.status === 'success' && state.profile && state.imageUrl && (
           <div className="space-y-6">
             <h2 className="text-3xl font-headline text-center font-bold tracking-tight">
-              Possible References
+              Possible Reference
             </h2>
-            <div className="grid gap-4 md:grid-cols-2">
-              {state.profiles.map((profile, index) => (
-                <Card
-                  key={index}
-                  className="animate-fade-in opacity-0"
-                  style={{ animationDelay: `${index * 150}ms` }}
-                >
-                  <CardContent className="p-6">
-                    <p className="text-card-foreground">{profile}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <Card
+              className="animate-fade-in opacity-0"
+            >
+              <CardContent className="p-6">
+                 <div className="grid md:grid-cols-2 gap-6 items-center">
+                    <div className="space-y-4">
+                      <p className="text-card-foreground">{state.profile}</p>
+                    </div>
+                    <Image
+                      src={state.imageUrl}
+                      alt="Dream reference"
+                      width={512}
+                      height={512}
+                      className="rounded-lg object-cover"
+                      data-ai-hint="dream person"
+                    />
+                  </div>
+              </CardContent>
+            </Card>
           </div>
         )}
       </div>
