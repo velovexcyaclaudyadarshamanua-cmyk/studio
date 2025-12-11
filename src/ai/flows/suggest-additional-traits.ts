@@ -4,32 +4,15 @@
  * @fileOverview A flow to suggest additional traits for a dream character to improve reference matching.
  *
  * - suggestAdditionalTraits - A function that suggests additional traits.
- * - SuggestAdditionalTraitsInput - The input type for the suggestAdditionalTraits function.
- * - SuggestAdditionalTraitsOutput - The return type for the suggestAdditionalTraits function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-const SuggestAdditionalTraitsInputSchema = z.object({
-  dreamCharacterDescription: z
-    .string()
-    .describe('The description of the dream character.'),
-});
-export type SuggestAdditionalTraitsInput = z.infer<
-  typeof SuggestAdditionalTraitsInputSchema
->;
-
-const SuggestAdditionalTraitsOutputSchema = z.object({
-  suggestedTraits: z
-    .string()
-    .describe(
-      'A list of suggested traits or details the user could provide about the dream character.'
-    ),
-});
-export type SuggestAdditionalTraitsOutput = z.infer<
-  typeof SuggestAdditionalTraitsOutputSchema
->;
+import {
+  SuggestAdditionalTraitsInputSchema,
+  SuggestAdditionalTraitsOutputSchema,
+  type SuggestAdditionalTraitsInput,
+  type SuggestAdditionalTraitsOutput,
+} from '@/ai/schemas/suggest-additional-traits-schema';
 
 export async function suggestAdditionalTraits(
   input: SuggestAdditionalTraitsInput

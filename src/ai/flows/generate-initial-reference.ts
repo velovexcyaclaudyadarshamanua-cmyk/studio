@@ -4,29 +4,17 @@
  * @fileOverview AI flow for generating a potential profile based on dream descriptions.
  *
  * - generateInitialReference - A function that generates a potential profile.
- * - GenerateInitialReferenceInput - The input type for the generateInitialReference function.
- * - GenerateInitialReferenceOutput - The return type for the generateInitialReference function.
  */
 
 import {ai} from '@/ai/genkit';
+import {
+  GenerateInitialReferenceInputSchema,
+  GenerateInitialReferenceOutputSchema,
+  NeedsMoreDetailsSchema,
+  type GenerateInitialReferenceInput,
+  type GenerateInitialReferenceOutput,
+} from '@/ai/schemas/generate-initial-reference-schema';
 import {z} from 'genkit';
-
-const GenerateInitialReferenceInputSchema = z.object({
-  clothing: z.string().describe('Description of the person\'s clothing in the dream.'),
-  environment: z.string().describe('Description of the environment in the dream.'),
-  otherDetails: z.string().describe('Any other details about the person, excluding facial features.'),
-});
-export type GenerateInitialReferenceInput = z.infer<typeof GenerateInitialReferenceInputSchema>;
-
-const NeedsMoreDetailsSchema = z.boolean().describe('True if the AI requires more details to provide a good reference, false otherwise.');
-const PossibleProfileSchema = z.string().describe('A single possible profile of the person from the dream.');
-
-const GenerateInitialReferenceOutputSchema = z.object({
-  needsMoreDetails: NeedsMoreDetailsSchema,
-  possibleProfile: PossibleProfileSchema,
-});
-
-export type GenerateInitialReferenceOutput = z.infer<typeof GenerateInitialReferenceOutputSchema>;
 
 const checkSufficientDetails = ai.defineTool({
   name: 'checkSufficientDetails',

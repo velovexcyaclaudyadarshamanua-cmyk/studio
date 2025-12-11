@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, use } from 'react';
 import { getDreamReference } from '@/app/actions';
 import type { FormState } from '@/app/form-state';
 import { Button } from '@/components/ui/button';
@@ -31,28 +31,8 @@ const initialState: FormState = {
   status: 'idle',
 };
 
-function SubmitButton() {
-  const { pending } = useActionState();
-
-  return (
-    <Button type="submit" className="w-full" disabled={pending} size="lg">
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-          Weaving...
-        </>
-      ) : (
-        <>
-          <Sparkles className="mr-2 h-5 w-5" />
-          Weave My Dream
-        </>
-      )}
-    </Button>
-  );
-}
-
 export function DreamWeaverForm() {
-  const [state, formAction] = useActionState(getDreamReference, initialState);
+  const [state, formAction, isPending] = useActionState(getDreamReference, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   
@@ -130,7 +110,19 @@ export function DreamWeaverForm() {
             </div>
           </CardContent>
         </Card>
-        <SubmitButton />
+        <Button type="submit" className="w-full" disabled={isPending} size="lg">
+            {isPending ? (
+                <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Weaving...
+                </>
+            ) : (
+                <>
+                <Sparkles className="mr-2 h-5 w-5" />
+                Weave My Dream
+                </>
+            )}
+        </Button>
       </form>
 
       <div className="mt-12">
