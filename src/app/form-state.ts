@@ -3,4 +3,5 @@ export interface FormState {
   message?: string;
   profile?: string;
   suggestions?: string[];
+  dreamInterpretation?: string;
 }

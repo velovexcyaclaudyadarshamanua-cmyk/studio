@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
+  BookText,
   ClipboardList,
   Info,
   Loader2,
@@ -94,7 +95,7 @@ export function DreamWeaverForm() {
                 id="clothing"
                 name="clothing"
                 placeholder="What was the person wearing? e.g., a long red coat, a vintage floral dress"
-                rows={3}
+                rows={2}
               />
             </div>
             <div className="space-y-2">
@@ -109,7 +110,7 @@ export function DreamWeaverForm() {
                 id="environment"
                 name="environment"
                 placeholder="Where did the dream take place? e.g., a misty forest, a bustling city at night"
-                rows={3}
+                rows={2}
               />
             </div>
             <div className="space-y-2">
@@ -124,7 +125,22 @@ export function DreamWeaverForm() {
                 id="otherDetails"
                 name="otherDetails"
                 placeholder="Any other details? e.g., carrying an old book, a distinctive walk, a unique piece of jewelry"
-                rows={4}
+                rows={3}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="dreamStory"
+                className="flex items-center gap-2 font-semibold"
+              >
+                <BookText className="w-4 h-4 text-muted-foreground" />
+                Dream Story
+              </Label>
+              <Textarea
+                id="dreamStory"
+                name="dreamStory"
+                placeholder="Tell the story of your dream from beginning to end."
+                rows={5}
               />
             </div>
           </CardContent>
@@ -152,20 +168,40 @@ export function DreamWeaverForm() {
             </AlertDescription>
           </Alert>
         )}
-        {state.status === 'success' && state.profile && (
-          <div className="space-y-6">
-            <h2 className="text-3xl font-headline text-center font-bold tracking-tight">
-              Possible Reference
-            </h2>
-            <Card
-              className="animate-fade-in opacity-0"
-            >
-              <CardContent className="p-6">
-                 <div className="space-y-4">
-                    <p className="text-card-foreground">{state.profile}</p>
-                 </div>
-              </CardContent>
-            </Card>
+        {state.status === 'success' && (state.profile || state.dreamInterpretation) && (
+          <div className="space-y-8">
+            {state.profile && (
+              <div>
+                <h2 className="text-3xl font-headline text-center font-bold tracking-tight mb-6">
+                  Possible Reference
+                </h2>
+                <Card
+                  className="animate-fade-in opacity-0"
+                >
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                        <p className="text-card-foreground">{state.profile}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+            {state.dreamInterpretation && (
+              <div>
+                <h2 className="text-3xl font-headline text-center font-bold tracking-tight mb-6">
+                  About Your Dream
+                </h2>
+                <Card
+                  className="animate-fade-in opacity-0 [animation-delay:200ms]"
+                >
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                        <p className="text-card-foreground">{state.dreamInterpretation}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </div>
         )}
       </div>

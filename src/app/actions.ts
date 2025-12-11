@@ -2,6 +2,7 @@
 
 import { generateInitialReference } from '@/ai/flows/generate-initial-reference';
 import { suggestAdditionalTraits } from '@/ai/flows/suggest-additional-traits';
+import { interpretDream } from '@/ai/flows/interpret-dream';
 import { z } from 'zod';
 import type { FormState } from '@/app/form-state';
 
@@ -9,6 +10,7 @@ const DreamSchema = z.object({
   clothing: z.string(),
   environment: z.string(),
   otherDetails: z.string(),
+  dreamStory: z.string(),
 });
 
 export async function getDreamReference(
@@ -20,6 +22,7 @@ export async function getDreamReference(
       clothing: formData.get('clothing'),
       environment: formData.get('environment'),
       otherDetails: formData.get('otherDetails'),
+      dreamStory: formData.get('dreamStory'),
     });
 
     if (!validatedFields.success) {
@@ -29,9 +32,9 @@ export async function getDreamReference(
       };
     }
     
-    const { clothing, environment, otherDetails } = validatedFields.data;
+    const { clothing, environment, otherDetails, dreamStory } = validatedFields.data;
     
-    if (!clothing && !environment && !otherDetails) {
+    if (!clothing && !environment && !otherDetails && !dreamStory) {
         return {
             status: 'error',
             message: 'Please fill out at least one field to generate a reference.',
@@ -44,6 +47,13 @@ export async function getDreamReference(
       environment,
       otherDetails,
     });
+    
+    let dreamInterpretation: string | undefined = undefined;
+    if (dreamStory) {
+      const interpretationResult = await interpretDream({ dreamStory });
+      dreamInterpretation = interpretationResult.interpretation;
+    }
+
 
     if (aiResult.needsMoreDetails) {
       const dreamCharacterDescription = `Clothing: ${clothing}, Environment: ${environment}, Other Details: ${otherDetails}`;
@@ -64,6 +74,7 @@ export async function getDreamReference(
         status: 'success',
         message: 'Here is a possible reference based on your dream.',
         profile: aiResult.possibleProfile,
+        dreamInterpretation: dreamInterpretation,
       };
     }
 
